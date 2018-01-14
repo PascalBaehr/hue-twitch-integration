@@ -2,8 +2,6 @@
 .idea
 /config/config.json
 package-lock.json
-setup.bat
-start.bat
 
 # Logs
 logs
