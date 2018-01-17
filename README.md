@@ -8,6 +8,8 @@ Integrating the Philips Hue API with Twitch.tv to enable light changes upon subs
     npm install
     
     node config/install.js
+    
+    npx electron ./config/config.js
 # Changing The Settings
 1. If you are on Windows, run settings.bat. If you are not on Windows, open a terminal/command prompt at the unzipped folder and run these commands in order:
 
