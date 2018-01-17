@@ -159,6 +159,10 @@
               "color": {
                 "type": "integer",
                 "title": "Color"
+              },
+              "cooldown": {
+                "type": "integer",
+                "title": "Cooldown"
               }
             }
           },

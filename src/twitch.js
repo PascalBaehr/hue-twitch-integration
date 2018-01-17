@@ -59,12 +59,40 @@ client.on("cheer", function (channel, userstate, message) {
     cheer(userstate["display-name"], userstate["bits"]);
 });
 
+
+let chatCommandCooldowns = {};
 client.on("message", function (channel, userstate, message, self) {
-    if (userstate["message-type"] === 'chat'
-        && userstate["display-name"].toLowerCase() === settings.channel.toLowerCase()
-        && message.toLowerCase() === "!huetwitch debug") {
-        console.log("Testing Hue Light Event");
-        hue.trigger();
+    if (userstate["message-type"] === 'chat' && settings.commands.enabled === true) {
+        let isOwner = userstate["display-name"].toLowerCase() === settings.channel.toLowerCase();
+        let isMod = userstate.mod === true;
+        let isSubscriber = userstate.subscriber === true;
+        let dateTime = new Date().getTime();
+        let commands = settings.commands.commands;
+        for (let i = 0; i < commands.length; i++) {
+            let command = commands[i];
+            if (message === command.command) {
+                if (chatCommandCooldowns[command.command]) {
+                    let lastUsed = chatCommandCooldowns[command.command].lastUsed;
+                    if (dateTime - lastUsed < (command.cooldown * 1000)) return;
+                }
+
+                chatCommandCooldowns[command.command] = {lastUsed: dateTime};
+                switch (command.permission) {
+                    case "Owner":
+                        if (isOwner) hue.temporaryColorChange(command.color, 254);
+                        break;
+                    case "Mod":
+                        if (isOwner || isMod) hue.temporaryColorChange(command.color, 254);
+                        break;
+                    case "Subscriber":
+                        if (isOwner || isMod || isSubscriber) hue.temporaryColorChange(command.color, 254);
+                        break;
+                    case "All":
+                        hue.temporaryColorChange(command.color, 254);
+                        break;
+                }
+            }
+        }
     }
 });
 
@@ -94,9 +122,9 @@ function cheer(username, bits) {
     if (settings.cheerSpecials.enabled) {
         let specials = settings.cheerSpecials.specials;
 
-        for(let i = 0; i < specials.length; i++) {
+        for (let i = 0; i < specials.length; i++) {
             let special = specials[i];
-            if(parseInt(bits) === parseInt(special.trigger)) {
+            if (parseInt(bits) === parseInt(special.trigger)) {
                 hue.temporaryColorChange(special.color, 254).catch(err => helper.logError(err));
             }
         }
@@ -111,14 +139,14 @@ function commands(msg) {
         }
         else if (msg[0] === 'cheer') cheer('testUser', 50);
         else if (msg[0] === 'chatcommands') printChatCommands();
-        else if (msg[0] === 'exit')helper.cleanExit();
+        else if (msg[0] === 'exit') helper.cleanExit();
     } else if (msg.length === 2) {
         if (msg[0] === 'sub') {
             let months = Number(msg[1]);
-            if(months) resub("testUser", months);
+            if (months) resub("testUser", months);
         } else if (msg[0] === 'cheer') {
             let bits = Number(msg[1]);
-            if(bits) cheer("testUser", bits);
+            if (bits) cheer("testUser", bits);
         } else if (msg[0] === 'debug') {
             debug = helper.parseBool(msg[1]);
             hue.setDebug(debug);
@@ -128,16 +156,16 @@ function commands(msg) {
 
 function printChatCommands() {
     let table = new Table({
-        head: ['Command', 'Permission', 'Color'],
+        head: ['Command', 'Permission', 'Color', "Cooldown"],
         style: {
             head: [],
             border: []
         }
     });
     let commands = settings.commands.commands;
-    for(let i = 0; i < commands.length; i++) {
+    for (let i = 0; i < commands.length; i++) {
         let command = commands[i];
-        table.push([command.command, command.permission, command.color]);
+        table.push([command.command, command.permission, command.color, command.cooldown]);
     }
     console.log(table.toString());
 }
