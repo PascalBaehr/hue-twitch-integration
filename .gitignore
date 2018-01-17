@@ -1,6 +1,7 @@
 # Custom
 .idea
 /config/config.json
+/config/settings.json
 package-lock.json
 
 # Logs

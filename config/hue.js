@@ -15,8 +15,8 @@ exports.connectToBridge = async function(ip, config) {
         user = await client.users.create(user);
         helper.cyanPrint(`New user created - Username: ${user.username}`);
 
-        config.bridgeIP = ip;
-        config.apiUsername = user.username;
+        config['bridgeIP'] = ip;
+        config['apiUsername'] = user.username;
         return true;
     } catch (err) {
         if (err instanceof huejay.Error && parseInt(err.type) === 101) {

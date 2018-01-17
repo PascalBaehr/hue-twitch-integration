@@ -5,15 +5,20 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "config": "electron ./config/config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Michael Afrin",
   "license": "ISC",
   "dependencies": {
     "app-module-path": "^2.2.0",
+    "cli-table": "^0.3.1",
+    "electron": "^1.8.1",
+    "express": "^4.16.2",
     "huejay": "^1.7.4",
+    "json-editor": "^0.7.28",
     "keypress": "^0.2.1",
     "readline-sync": "^1.4.7",
-    "twitch-js": "^1.2.8"
+    "twitch-js": "^1.2.10"
   }
 }

@@ -1,0 +1,173 @@
+{
+  "title": "Settings",
+  "type": "object",
+  "format": "grid",
+  "properties": {
+    "channel": {
+      "type": "string",
+      "title": "Channel"
+    },
+    "group": {
+      "type": "string",
+      "title": "Name of Hue Light Group"
+    },
+    "mode": {
+      "type": "string",
+      "title": "Mode",
+      "enum": [
+        "breatheCycle",
+        "flashLights",
+        "colorLoop"
+      ]
+    },
+    "colorLoop": {
+      "type": "object",
+      "title": "Color Loop",
+      "properties": {
+        "secondsToCompleteLoop": {
+          "type": "integer",
+          "title": "Seconds To Complete Loop",
+          "default": 5
+        },
+        "numberOfLoops": {
+          "type": "integer",
+          "title": "Number of Loops",
+          "default": 1
+        }
+      }
+    },
+    "flashLights": {
+      "type": "object",
+      "title": "Flashing",
+      "properties": {
+        "secondsOfFlashing": {
+          "type": "integer",
+          "title": "Seconds of Flashing",
+          "default": 5
+        }
+      }
+    },
+    "breatheCycle": {
+      "type": "object",
+      "title": "Breathe Cycle",
+      "properties": {
+        "numberOfCycles": {
+          "type": "integer",
+          "title": "Number of Cycles",
+          "default": 1
+        }
+      }
+    },
+    "months": {
+      "type": "object",
+      "title": "Months",
+      "description": "Temporary color change for 12, 24, and 36 month subscriptions. The color scale is between 0 and 65535. Common colors are: Red = 0, Orange = 5750, Green = 25250, Light Blue = 40000, Blue = 46000, Pink/Purple = 53700",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "format": "checkbox",
+          "propertyOrder": 0,
+          "default": false
+        },
+        "12": {
+          "type": "integer",
+          "title": "12 Months"
+        },
+        "24": {
+          "type": "integer",
+          "title": "24 Months"
+        },
+        "36": {
+          "type": "integer",
+          "title": "36 Months"
+        }
+
+      }
+    },
+    "cheerSpecials": {
+      "type": "object",
+      "title": "Cheer Specials",
+      "description": "Temporary color change for certain cheers. The color scale is between 0 and 65535. Common colors are: Red = 0, Orange = 5750, Green = 25250, Light Blue = 40000, Blue = 46000, Pink/Purple = 53700",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "format": "checkbox",
+          "propertyOrder": 0,
+          "default": false
+        },
+        "specials": {
+          "type": "array",
+          "title": "Specials",
+          "format": "table",
+          "items": {
+            "type": "object",
+            "title": "Special",
+            "properties": {
+              "trigger": {
+                "type": "integer",
+                "title": "Number of Bits"
+              },
+              "color": {
+                "type": "integer",
+                "title": "Color"
+              }
+            }
+          },
+          "default": [
+            {"trigger": 666, "color": 0}
+          ]
+        }
+
+      }
+    },
+    "commands": {
+      "type": "object",
+      "title": "Commands",
+      "description": "Temporary color change for commands. The color scale is between 0 and 65535. Common colors are: Red = 0, Orange = 5750, Green = 25250, Light Blue = 40000, Blue = 46000, Pink/Purple = 53700",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "format": "checkbox",
+          "propertyOrder": 0,
+          "default": false
+        },
+        "commands": {
+          "type": "array",
+          "title": "Commands",
+          "format": "table",
+          "items": {
+            "type": "object",
+            "title": "Command",
+            "properties": {
+              "command": {
+                "type": "string",
+                "title": "Command"
+              },
+              "permission": {
+                "type": "string",
+                "title": "Permission Level",
+                "enum": [
+                  "Owner",
+                  "Mod",
+                  "Subscriber",
+                  "All"
+                ]
+              },
+              "color": {
+                "type": "integer",
+                "title": "Color"
+              }
+            }
+          },
+          "default": [
+            {"command": "!huetest", "permission": "Owner", "color": 0}
+          ]
+        }
+
+      }
+    }
+  }
+}

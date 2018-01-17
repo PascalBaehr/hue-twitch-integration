@@ -1,15 +1,16 @@
 //Created by mkafr on 12/17/2017.
 'use strict';
 
+const Table = require('cli-table');
 const twitch = require('twitch-js');
 const hue = require('./hue.js');
 
-let config = require('../config/config.json');
+let settings = require('../config/settings.json');
 let helper = require('./helper');
 
 let debug = false;
 
-let channel = "#" + config.channel;
+let channel = "#" + settings.channel;
 let options = {
     options: {
         debug: false
@@ -29,7 +30,7 @@ let client = new twitch.client(options);
 helper.log("Connecting to Twitch API...");
 client.connect();
 helper.log("Connection to Twitch API Successful");
-helper.log(`Listening to Twitch.tv/${config.channel}`);
+helper.log(`Listening to Twitch.tv/${settings.channel}`);
 
 hue.start().catch(err => helper.logError(err));
 
@@ -60,7 +61,7 @@ client.on("cheer", function (channel, userstate, message) {
 
 client.on("message", function (channel, userstate, message, self) {
     if (userstate["message-type"] === 'chat'
-        && userstate["display-name"].toLowerCase() === config.channel.toLowerCase()
+        && userstate["display-name"].toLowerCase() === settings.channel.toLowerCase()
         && message.toLowerCase() === "!huetwitch debug") {
         console.log("Testing Hue Light Event");
         hue.trigger();
@@ -69,16 +70,16 @@ client.on("message", function (channel, userstate, message, self) {
 
 function resub(username, months) {
     helper.log(`${username} re-subscribed for ${months} months`);
-    if (config.months.enabled) {
+    if (settings.months.enabled) {
         switch (parseInt(months)) {
             case 12:
-                hue.temporaryColorChange(config.months["12"]).catch(err => helper.logError(err));
+                hue.temporaryColorChange(settings.months["12"], 254).catch(err => helper.logError(err));
                 break;
             case 24:
-                hue.temporaryColorChange(config.months["24"]).catch(err => helper.logError(err));
+                hue.temporaryColorChange(settings.months["24"], 254).catch(err => helper.logError(err));
                 break;
             case 36:
-                hue.temporaryColorChange(config.months["36"]).catch(err => helper.logError(err));
+                hue.temporaryColorChange(settings.months["36"], 254).catch(err => helper.logError(err));
                 break;
             default:
                 hue.trigger();
@@ -90,12 +91,13 @@ function resub(username, months) {
 
 function cheer(username, bits) {
     helper.log(`${username} gave ${bits} bits`);
-    if (config.cheerSpecials.enabled) {
-        let specials = config.cheerSpecials.specials;
+    if (settings.cheerSpecials.enabled) {
+        let specials = settings.cheerSpecials.specials;
 
-        for (let special in specials) {
-            if (parseInt(bits) === parseInt(special)) {
-                hue.temporaryColorChange(specials[special]).catch(err => helper.logError(err));
+        for(let i = 0; i < specials.length; i++) {
+            let special = specials[i];
+            if(parseInt(bits) === parseInt(special.trigger)) {
+                hue.temporaryColorChange(special.color, 254).catch(err => helper.logError(err));
             }
         }
     }
@@ -108,6 +110,7 @@ function commands(msg) {
             hue.trigger();
         }
         else if (msg[0] === 'cheer') cheer('testUser', 50);
+        else if (msg[0] === 'chatcommands') printChatCommands();
         else if (msg[0] === 'exit')helper.cleanExit();
     } else if (msg.length === 2) {
         if (msg[0] === 'sub') {
@@ -121,4 +124,20 @@ function commands(msg) {
             hue.setDebug(debug);
         }
     }
+}
+
+function printChatCommands() {
+    let table = new Table({
+        head: ['Command', 'Permission', 'Color'],
+        style: {
+            head: [],
+            border: []
+        }
+    });
+    let commands = settings.commands.commands;
+    for(let i = 0; i < commands.length; i++) {
+        let command = commands[i];
+        table.push([command.command, command.permission, command.color]);
+    }
+    console.log(table.toString());
 }

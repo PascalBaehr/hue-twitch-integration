@@ -26,22 +26,23 @@ exports.logError = function (msg) {
 
 exports.isConfigValid = function () {
     const config = require('../config/config.json');
+    const settings = require('../config/settings.json');
     let modes = ['breatheCycle', 'colorLoop', 'flashLights'];
 
-    let months = config.months["12"] >= 0 && config.months["12"] <= 65535
-        && config.months["24"] >= 0 && config.months["24"] <= 65535
-        && config.months["36"] >= 0 && config.months["36"] <= 65535;
+    let months = settings.months["12"] >= 0 && settings.months["12"] <= 65535
+        && settings.months["24"] >= 0 && settings.months["24"] <= 65535
+        && settings.months["36"] >= 0 && settings.months["36"] <= 65535;
 
     let specials = true;
-    for(let special in config.cheerSpecials.specials) {
-        if(!Number(special) || config.cheerSpecials.specials[special] < 0 || config.cheerSpecials.specials[special] >= 65535) {
+    for(let special of settings.cheerSpecials.specials) {
+        if(!Number(special.trigger) || special.color < 0 || special.color >= 65535) {
             specials = false;
             break;
         }
     }
 
-    return config.bridgeIP !== "" && config.apiUsername !== "" && config.channel !== "" && config.group !== ""
-        && modes.includes(config.mode) && months && specials;
+    return config.bridgeIP !== "" && config.apiUsername !== "" && settings.channel !== "" && settings.group !== ""
+        && modes.includes(settings.mode) && months && specials;
 };
 
 exports.parseBool = function (input) {

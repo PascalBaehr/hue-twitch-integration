@@ -5,6 +5,8 @@
 let huejay = require('huejay');
 
 let config = require('../config/config.json');
+let settings = require('../config/settings.json');
+
 let helper = require('./helper');
 let sleep = helper.sleep;
 
@@ -24,6 +26,7 @@ flashLights(1)
         console.log("Commands (Replace what's inside brackets, and do not type the brackets):\n" +
             "sub\n" +
             "cheer\n" +
+            "chatCommands\n" +
             "sub {months}\n" +
             "cheer {bits}\n" +
             "debug {true/false}\n" +
@@ -51,20 +54,20 @@ exports.start = async function () {
 };
 
 exports.trigger = function () {
-    switch (config.mode) {
+    switch (settings.mode) {
         case "colorLoop":
             triggersToDo.push(async function () {
-                await hueLoop(config.colorLoop.secondsToCompleteLoop, config.colorLoop.numberOfLoops).catch(err => helper.logError(err));
+                await hueLoop(settings.colorLoop.secondsToCompleteLoop, settings.colorLoop.numberOfLoops).catch(err => helper.logError(err));
             });
             break;
         case "flashLights":
             triggersToDo.push(async function () {
-                await flashLights(config.flashLights.secondsOfFlashing).catch(err => helper.logError(err));
+                await flashLights(settings.flashLights.secondsOfFlashing).catch(err => helper.logError(err));
             });
             break;
         case "breatheCycle":
             triggersToDo.push(async function () {
-                await breatheCycle(config.breatheCycle.numberOfCycles).catch(err => helper.logError(err));
+                await breatheCycle(settings.breatheCycle.numberOfCycles).catch(err => helper.logError(err));
             });
             break;
     }
@@ -136,13 +139,13 @@ async function breatheCycle(numberOfCycles) {
     }
 }
 
-exports.temporaryColorChange = async function (hue) {
+exports.temporaryColorChange = async function (hue, saturation) {
     let func = async function () {
         let group = await getGroup();
         let originalLights = await getOriginalLights();
 
         group.hue = hue;
-        group.saturation = 254;
+        group.saturation = saturation;
         group = await client.groups.save(group);
         await sleep(3000);
 
@@ -159,7 +162,7 @@ async function getGroup() {
     let groupsFromApi = await client.groups.getAll();
     if (debug) console.log(JSON.stringify(groupsFromApi));
     for (let group of groupsFromApi) {
-        if (group.name === config.group) {
+        if (group.name === settings.group) {
             lights = group.lightIds;
             return group;
         }
@@ -186,7 +189,7 @@ async function getOriginalLights() {
 
 function getAverageBrightness(lights) {
     let ret = 0;
-    for(let i = 0; i < lights.length; i++) {
+    for (let i = 0; i < lights.length; i++) {
         ret += lights[i].brightness;
     }
     return ret / lights.length;

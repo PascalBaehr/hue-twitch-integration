@@ -12,4 +12,5 @@ if(helper.isConfigValid()) {
     twitch = require('./src/twitch');
 } else {
     helper.logError("Config is not valid. Please exit and run the configuration again");
+    helper.cleanExit();
 }

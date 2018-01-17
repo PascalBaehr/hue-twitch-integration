@@ -2,5 +2,5 @@
 ECHO Installing/Updating Dependencies...
 CALL cmd /C npm install --silent
 CALL cmd /C npm update --silent
-node ./config/config.js
+npx electron ./config/config.js
 pause
