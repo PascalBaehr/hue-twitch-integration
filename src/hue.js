@@ -115,6 +115,9 @@ async function breatheCycle(numberOfCycles) {
     let originalLights = await getOriginalLights();
 
     let brightness = getAverageBrightness(originalLights);
+    // Clamping brightness between 0 and 254
+    brightness = Math.min(Math.max(brightness, 0), 254);
+
     if (group) {
         for (let i = 0; i < numberOfCycles; i++) {
             group.transitionTime = timeFrom0To254;
