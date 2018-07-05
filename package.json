@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Michael Afrin",
-  "license": "ISC",
+  "license": "MPL-2.0",
   "dependencies": {
     "app-module-path": "^2.2.0",
     "cli-table": "^0.3.1",

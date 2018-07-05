@@ -1,7 +1,12 @@
 //Created by mkafr on 12/17/2017.
-// Common Colors: Red = 0, Orange = 5750, Green = 25250, Pink/Purple = 53700, Blue = 46000, Light Blue = 40000
+
+/** This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 'use strict';
 
+// Common Colors: Red = 0, Orange = 5750, Green = 25250, Pink/Purple = 53700, Blue = 46000, Light Blue = 40000
 let huejay = require('huejay');
 
 let config = require('../config/config.json');
