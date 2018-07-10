@@ -8,7 +8,7 @@ const app = electron.app;
 
 const BrowserWindow = electron.BrowserWindow;
 
-var mainWindow;
+let mainWindow;
 
 app.on('ready', function () {
     mainWindow = new BrowserWindow({});

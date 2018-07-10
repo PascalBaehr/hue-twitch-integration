@@ -82,7 +82,6 @@
           "type": "integer",
           "title": "36 Months"
         }
-
       }
     },
     "cheerSpecials": {
@@ -116,10 +115,12 @@
             }
           },
           "default": [
-            {"trigger": 666, "color": 0}
+            {
+              "trigger": 666,
+              "color": 0
+            }
           ]
         }
-
       }
     },
     "commands": {
@@ -167,10 +168,13 @@
             }
           },
           "default": [
-            {"command": "!huetest", "permission": "Owner", "color": 0}
+            {
+              "command": "!huetest",
+              "permission": "Owner",
+              "color": 0
+            }
           ]
         }
-
       }
     }
   }

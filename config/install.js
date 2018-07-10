@@ -17,25 +17,25 @@ helper.log("The following prompts will configure the program, and help establish
 prompts().catch(err => helper.logError(err));
 
 async function prompts() {
-    let config = {};
+  let config = {};
 
-    let ans = read.question("Do you know the IP address of your Hue Bridge? (Y/[N]) ", {defaultInput: "N"}).toUpperCase();
-    if (ans === "Y") {
-        ans = read.question("What is the IP address of your Hue Bridge? ");
-    } else {
-        ans = await hue.findBridge();
-    }
-    if (ans === undefined) {
-        helper.logError("Could not find a Hue Bridge on your network");
-        ans = read.question("What is the IP address of your Hue Bridge? ");
-    }
+  let ans = read.question("Do you know the IP address of your Hue Bridge? (Y/[N]) ", {defaultInput: "N"}).toUpperCase();
+  if (ans === "Y") {
+    ans = read.question("What is the IP address of your Hue Bridge? ");
+  } else {
+    ans = await hue.findBridge();
+  }
+  if (ans === undefined) {
+    helper.logError("Could not find a Hue Bridge on your network");
+    ans = read.question("What is the IP address of your Hue Bridge? ");
+  }
 
+  read.question("Please press the link button on your Phillips Hue Bridge, then hit Enter to continue");
+  let success = await hue.connectToBridge(ans, config);
+  while (success === false) {
     read.question("Please press the link button on your Phillips Hue Bridge, then hit Enter to continue");
-    let success = await hue.connectToBridge(ans, config);
-    while (success === false) {
-        read.question("Please press the link button on your Phillips Hue Bridge, then hit Enter to continue");
-        success = await hue.connectToBridge(ans, config);
-    }
+    success = await hue.connectToBridge(ans, config);
+  }
 
-    fs.writeFileSync(path.join(_base, '/config/config.json'), JSON.stringify(config, null, 2));
+  fs.writeFileSync(path.join(_base, '/config/config.json'), JSON.stringify(config, null, 2));
 }
